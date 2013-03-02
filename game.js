@@ -4,7 +4,7 @@ game = (function() {
     state: 0,
     lane: 0,
     muted: false,
-    panes: [],
+    objects: [],
     clock: 0,
 
     start: function() {
@@ -27,20 +27,32 @@ game = (function() {
       gfx.clear();
 
       // draw the panes of glass
-      for (i in this.panes) {
-        var pane = this.panes[i];
+      for (i in this.objects) {
+        var item = this.objects[i];
 
-        if (!pane.broken && pane.lane == game.lane && pane.y > 485 && pane.y < 500) {
-          pane.broken = true;
-          audio.glass();
+        if (item.y > gfx.HEIGHT) continue;
 
-          if (Math.random() < 0.05) {
-            audio.ouch();
+        if (item.type == 'pane') {
+          if (!item.broken && item.lane == game.lane && item.y > 485 && item.y < 500) {
+            item.broken = true;
+            audio.glass();
+
+            if (Math.random() < 0.05) {
+              audio.ouch();
+            }
           }
+          
+          gfx.pane(400 + 150*item.lane - 21, item.y, item.broken);
+        } else if (item.type == 'ladder') {
+          if (!item.under && item.lane == game.lane && item.y > 480 && item.y < 500) {
+            audio.whoosh();
+            item.under = true;
+          }
+
+          gfx.ladder(400 + 150*item.lane - 30, item.y)
         }
-        
-        gfx.pane(400 + 150*pane.lane - 21, pane.y, pane.broken);
-        pane.y += 6;
+
+        item.y += 6;
       }
 
       // draw the hero
@@ -62,27 +74,34 @@ game = (function() {
       var lpane = { type: 'pane', lane: -1 },
           mpane = { type: 'pane', lane: 0 },
           rpane = { type: 'pane', lane: 1 },
+          llad = { type: 'ladder', lane: -1 },
+          mlad = { type: 'ladder', lane: 0 },
+          rlad = { type: 'ladder', lane: 1 },
           i, j, y = -20,
           choice,
           to_add,
           patterns;
 
       patterns = [
-        [],
-        [],
-        [],
         [lpane, lpane, lpane, lpane, lpane],
         [mpane, mpane, mpane, mpane, mpane],
         [rpane, rpane, rpane, rpane, rpane],
         [lpane, lpane, mpane, mpane, rpane, rpane],
-        [rpane, rpane, mpane, mpane, lpane, lpane]
+        [rpane, rpane, mpane, mpane, lpane, lpane],
+        [llad, lpane, llad, lpane],
+        [mlad, mpane, mlad, mpane],
+        [rlad, rpane, rlad, rpane],
+        [llad, mlad, rlad]
       ];
 
       to_add = Math.floor(Math.random() * 5) + 1;
       for (i = 0; i < to_add; i++) {
         choice = patterns[Math.floor(Math.random() * patterns.length)];
         for (j in choice) {
-          this.panes.push({ broken: false, lane: choice[j].lane, y: y });
+          if (choice[j].type == 'pane')
+            this.objects.push({ type: choice[j].type, broken: false, lane: choice[j].lane, y: y });
+          else if (choice[j].type == 'ladder')
+            this.objects.push({ type: choice[j].type, under: false, lane: choice[j].lane, y: y });
           y -= 60;
         }
       }

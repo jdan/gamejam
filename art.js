@@ -21,7 +21,8 @@ $(function() {
         LBLUE:  'rgb(150, 150, 250)',
         RED:    'rgb(180, 30, 35)',
         LRED:   'rgb(250, 100, 110)',
-        SKIN:   'rgb(255, 245, 200)'
+        SKIN:   'rgb(255, 245, 200)',
+        BROWN:  'rgb(170, 170, 140)'
       },
 
       clear: function() {
@@ -39,6 +40,21 @@ $(function() {
         this.ctx.fillRect(x, y, width, height);
 
         return this.ctx.restore();
+      },
+
+      line: function(x1, y1, x2, y2, color) {
+        color = color || this.colors.BLACK;
+
+        this.ctx.save();
+
+        this.ctx.beginPath();
+
+        this.ctx.strokeStyle = color;
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.stroke();
+
+        this.ctx.restore();
       },
 
       // draw the hero
@@ -75,6 +91,12 @@ $(function() {
           this.rect(x, y, 15, 15, this.colors.BLUE);
           this.rect(x+2, y+2, 11, 11, this.colors.LBLUE);
         }
+      },
+
+      ladder: function(x, y) {
+        this.line(x, y+40, x+15, y+3);
+        this.line(x+11, y+3, x+19, y+3);
+        this.line(x+15, y+3, x+30, y+40);
       }
 
     }

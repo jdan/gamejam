@@ -1,19 +1,26 @@
 audio = (function() {
   return {
     glass: function() {
-      this.playChoice(['glassbreak1', 'glassbreak2']);
+      this.playChoice(['glassbreak1', 'glassbreak2'], 0.1);
     },
 
     ouch: function() {
-      this.playChoice(['ouch']);
+      this.playChoice(['ouch'], 0.05);
     },
 
-    playChoice: function(choices) {
+    whoosh: function() {
+      this.playChoice(['whoosh1', 'whoosh2']);
+    },
+
+    playChoice: function(choices, volume) {
       var choice;
+
+      volume = volume || 1;
       choice = choices[Math.floor(Math.random() * choices.length)];
 
       if (!game.muted) {
         this.clear(choices);
+        document.getElementById(choice).volume = volume;
         document.getElementById(choice).play();
       }
     },
