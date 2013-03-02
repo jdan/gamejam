@@ -12,8 +12,10 @@ audio = (function() {
       var choice;
       choice = choices[Math.floor(Math.random() * choices.length)];
 
-      this.clear(choices);
-      document.getElementById(choice).play();
+      if (!game.muted) {
+        this.clear(choices);
+        document.getElementById(choice).play();
+      }
     },
 
     clear: function(targets) {

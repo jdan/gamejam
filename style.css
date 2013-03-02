@@ -1,7 +1,7 @@
 body {
   background-color: #eee;
   color: #222;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'VT323', cursive;
 }
 
 #content {
@@ -10,6 +10,7 @@ body {
 }
 
 h1 {
+  font-size: 400%;
   text-align: center;
 }
 
